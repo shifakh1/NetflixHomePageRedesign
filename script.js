@@ -34,6 +34,9 @@ function initApp() {
     
     // Animated CTA button
     setupAnimatedCTA();
+    
+    // Banner slider functionality
+    setupBannerSlider();
 }
 
 // Sticky header functionality
@@ -176,6 +179,88 @@ function setupAnimatedCTA() {
             }, 1000);
         }, 5000);
     });
+}
+
+// Banner slider functionality
+function setupBannerSlider() {
+    const slides = document.querySelectorAll('.banner-slide');
+    const indicators = document.querySelectorAll('.indicator');
+    const prevBtn = document.querySelector('.banner-control.prev');
+    const nextBtn = document.querySelector('.banner-control.next');
+    
+    let currentSlide = 0;
+    let slideInterval;
+    
+    // Function to show a specific slide
+    function showSlide(index) {
+        // Remove active class from all slides and indicators
+        slides.forEach(slide => slide.classList.remove('active'));
+        indicators.forEach(indicator => indicator.classList.remove('active'));
+        
+        // Add active class to current slide and indicator
+        slides[index].classList.add('active');
+        indicators[index].classList.add('active');
+        
+        currentSlide = index;
+    }
+    
+    // Function to go to next slide
+    function nextSlide() {
+        let nextIndex = (currentSlide + 1) % slides.length;
+        showSlide(nextIndex);
+    }
+    
+    // Function to go to previous slide
+    function prevSlide() {
+        let prevIndex = (currentSlide - 1 + slides.length) % slides.length;
+        showSlide(prevIndex);
+    }
+    
+    // Start auto slide
+    function startSlideShow() {
+        slideInterval = setInterval(nextSlide, 5000);
+    }
+    
+    // Stop auto slide
+    function stopSlideShow() {
+        clearInterval(slideInterval);
+    }
+    
+    // Event listeners for controls
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            stopSlideShow();
+            nextSlide();
+            startSlideShow();
+        });
+    }
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            stopSlideShow();
+            prevSlide();
+            startSlideShow();
+        });
+    }
+    
+    // Event listeners for indicators
+    indicators.forEach(indicator => {
+        indicator.addEventListener('click', function() {
+            stopSlideShow();
+            showSlide(parseInt(this.getAttribute('data-index')));
+            startSlideShow();
+        });
+    });
+    
+    // Pause slideshow when hovering over banner
+    const heroSection = document.querySelector('.hero');
+    if (heroSection) {
+        heroSection.addEventListener('mouseenter', stopSlideShow);
+        heroSection.addEventListener('mouseleave', startSlideShow);
+    }
+    
+    // Start the slideshow
+    startSlideShow();
 }
 
 // Check for saved theme on page load

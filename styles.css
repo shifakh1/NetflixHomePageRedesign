@@ -1224,7 +1224,7 @@ section {
 
 @media (max-width: 480px) {
     .nav-buttons {
-        flex-direction: column;
+        flex-direction: row;
         gap: 8px;
     }
     

@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function initApp() {
     // Sticky header
     window.addEventListener('scroll', stickyHeader);
+    setupFeaturedSlider();
+    setupCategoryCards();
     
     // Mobile menu toggle
     const hamburger = document.querySelector('.hamburger');
@@ -99,6 +101,107 @@ function checkSavedTheme() {
         themeIcon.classList.add('fa-sun');
     }
 }
+
+// Featured slider functionality
+function setupFeaturedSlider() {
+    const slides = document.querySelectorAll('.featured-slide');
+    const indicators = document.querySelectorAll('.featured-indicators .indicator');
+    const prevBtn = document.querySelector('.featured-control.prev');
+    const nextBtn = document.querySelector('.featured-control.next');
+    
+    let currentSlide = 0;
+    let slideInterval;
+    
+    // Function to show a specific slide
+    function showSlide(index) {
+        // Remove active class from all slides and indicators
+        slides.forEach(slide => slide.classList.remove('active'));
+        indicators.forEach(indicator => indicator.classList.remove('active'));
+        
+        // Add active class to current slide and indicator
+        slides[index].classList.add('active');
+        indicators[index].classList.add('active');
+        
+        currentSlide = index;
+    }
+    
+    // Function to go to next slide
+    function nextSlide() {
+        let nextIndex = (currentSlide + 1) % slides.length;
+        showSlide(nextIndex);
+    }
+    
+    // Function to go to previous slide
+    function prevSlide() {
+        let prevIndex = (currentSlide - 1 + slides.length) % slides.length;
+        showSlide(prevIndex);
+    }
+    
+    // Start auto slide
+    function startSlideShow() {
+        slideInterval = setInterval(nextSlide, 6000);
+    }
+    
+    // Stop auto slide
+    function stopSlideShow() {
+        clearInterval(slideInterval);
+    }
+    
+    // Event listeners for controls
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            stopSlideShow();
+            nextSlide();
+            startSlideShow();
+        });
+    }
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            stopSlideShow();
+            prevSlide();
+            startSlideShow();
+        });
+    }
+    
+    // Event listeners for indicators
+    indicators.forEach(indicator => {
+        indicator.addEventListener('click', function() {
+            stopSlideShow();
+            showSlide(parseInt(this.getAttribute('data-index')));
+            startSlideShow();
+        });
+    });
+    
+    // Pause slideshow when hovering over slider
+    const featuredSlider = document.querySelector('.featured-slider-container');
+    if (featuredSlider) {
+        featuredSlider.addEventListener('mouseenter', stopSlideShow);
+        featuredSlider.addEventListener('mouseleave', startSlideShow);
+    }
+    
+    // Start the slideshow
+    startSlideShow();
+}
+
+// Add category card hover effects
+function setupCategoryCards() {
+    const categoryCards = document.querySelectorAll('.category-card');
+    
+    categoryCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.05)';
+            this.style.zIndex = '10';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+            this.style.zIndex = '';
+        });
+    });
+}
+
+
 
 // FAQ accordion functionality
 function setupFAQAccordion() {
